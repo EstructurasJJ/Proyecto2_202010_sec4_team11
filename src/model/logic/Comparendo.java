@@ -94,7 +94,6 @@ public class Comparendo implements Comparable<Comparendo>
 		{
 			SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 			FECHA_HORA = formato.parse(fechita);
-			//System.out.println(FECHA_HORA.toString());
 		}
 		catch(Exception e)
 		{
@@ -150,10 +149,41 @@ public class Comparendo implements Comparable<Comparendo>
 
 	public int compareTo(Comparendo compi) 
 	{
-		Date fecha1 = FECHA_HORA;
-		Date fecha2 = compi.darFecha_Hora();
+		String tipo1 = TIPO_SERVI;
+		String tipo2 = compi.darTipo_Servicio();
+		
+		String infra1 = INFRACCION;
+		String infra2 = compi.darInfraccion();
+		
+		int valor1 = 0;
+		int valor2 = 0;
+		
+		if (tipo1.equals("Particular"))			valor1 = 1;
+		else if (tipo1.equals("Oficial"))		valor1 = 2;
+		else if (tipo1.equals("Público"))		valor1 = 3;
 
-		return fecha1.compareTo(fecha2);	
+		
+		if (tipo2.equals("Particular"))			valor2 = 1;
+		else if (tipo2.equals("Oficial"))		valor2 = 2;
+		else if (tipo2.equals("Público"))		valor2 = 3;
+
+		if (valor1 != valor2)
+		{
+			if(valor1 > valor2)
+			{
+				return 1;
+			}
+			else
+			{
+				return -1;
+			}
+		}
+		else
+		{
+			return infra1.compareTo(infra2);
+		}
+		
+	
 	}
 
 }

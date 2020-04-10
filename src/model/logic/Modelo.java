@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
@@ -18,6 +19,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSyntaxException;
 
+import model.data_structures.ArbolRojoNegro;
 import model.data_structures.ListaEnlazadaQueue;
 import model.data_structures.MaxColaCP;
 import model.data_structures.MaxHeapCP;
@@ -43,9 +45,16 @@ public class Modelo
 	
 	private TablaHashSondeoLineal<String, Comparendo> HSLBobi = new TablaHashSondeoLineal<String, Comparendo>(2);
 	private TablaHashEncSeparado<String, Comparendo> HSCJuanjo = new TablaHashEncSeparado<String, Comparendo>(2);
+	
 	private MaxHeapCP<Comparendo> datosHeap  = new MaxHeapCP<Comparendo>();
 	private MaxColaCP<Comparendo> datosCola = new MaxColaCP<Comparendo>();
+	
 	private ListaEnlazadaQueue<Comparendo> booty = new ListaEnlazadaQueue<Comparendo>();
+	
+	private ArbolRojoNegro<Date, Comparendo> arbolBobi = new ArbolRojoNegro<Date, Comparendo>();
+	private ArbolRojoNegro<Double, Comparendo> arbolJuanjo = new ArbolRojoNegro<Double, Comparendo>();
+	
+	static Comparator<Comparendo> fecha = new OrdenarComparendoFecha();
 	
 	//////////////////////////
 	//////////////////////////
@@ -206,7 +215,7 @@ public class Modelo
 
 	}
 
-	public void componentesDelComparendo(String palabra)
+	private void componentesDelComparendo(String palabra)
 	{
 		if (palabra.equals("OBJECTID"))
 		{
@@ -250,7 +259,7 @@ public class Modelo
 		}
 	}
 
-	public void agregarCoordenada(double pCor)
+	private void agregarCoordenada(double pCor)
 	{
 		if(coordenadas == false)
 		{
@@ -291,15 +300,21 @@ public class Modelo
 	
 			String keyBob = getFechaModBobi(compaAgregar.darFecha_Hora());	
 			String keyJuanJo = compaAgregar.darMedio_Dete() + "-" + compaAgregar.darClase_Vehi() + "-" + compaAgregar.darTipo_Servicio() + "-" + compaAgregar.darLocalidad();
-			
 			HSLBobi.putInSet(keyBob, compaAgregar);
 			HSCJuanjo.putInSet(keyJuanJo, compaAgregar);
-			datosHeap.añadir(compaAgregar);
-			datosCola.agregar(compaAgregar);
-			booty.enqueue(compaAgregar);
-			
 			keyBob = "";
 			keyJuanJo = "";
+			
+			
+			//datosHeap.añadir(compaAgregar);
+			//datosCola.agregar(compaAgregar);
+			
+			booty.enqueue(compaAgregar);
+			
+			arbolBobi.put(compaAgregar.darFecha_Hora(), compaAgregar);
+			arbolJuanjo.put(compaAgregar.darLatitud(), compaAgregar);
+			
+
 			
 			////////////////////////////////////
 			////////////////////////////////////
@@ -310,11 +325,6 @@ public class Modelo
 		}
 	}
 	
-	public String getFechaModBobi(Date fechaMod)
-	{
-	    SimpleDateFormat sf = new SimpleDateFormat("MM-dd");
-	    return sf.format(fechaMod);
-	}
 
 	////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////TODO PROYECTO///////
@@ -349,23 +359,67 @@ public class Modelo
 		return booty;
 	}
 	
+	public ArbolRojoNegro<Date, Comparendo> darArbolBobi()
+	{
+		return arbolBobi;
+	}
+	
+	public ArbolRojoNegro<Double, Comparendo> darArbolJuanjo()
+	{
+		return arbolJuanjo;
+	}
+	
 	/////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////TODO BOBBY////////
 	/////////////////////////////////////////////////////////////////////////////////////
 	
-	public MaxHeapCP<Comparendo> darMComparendosGravedad(int m)
+	public ArrayList<Comparendo> darMComparendosGravedad(int m)
 	{
-		return null;
-	}
-	
-	public void buscarPorMesYDia(int mes, String dia)
-	{
+		ArrayList listica = new ArrayList<Comparendo>();
+		
+		int i = 0;
+		
+		while (i < m)
+		{
+			Comparendo compi = datosHeap.devolverMax();
+			listica.add(compi);
+			
+			i++;
+		}
+		
+		return listica;
 		
 	}
 	
-	public void buscarFechaHoraLocalidad (String FechaHora, String Localidad)
+	public Iterator<Comparendo> buscarPorMesYDia(String mes, String dia)
+	{
+		String mesi = corregirMes(mes);
+		String llave = mesi + "-" + dia;
+		
+		Iterator<Comparendo> lista = HSLBobi.getSet(llave);
+		return lista;
+	}
+	
+	public ArrayList<Comparendo> buscarFechaHoraLocalidad (String FechaHoraMin, String FechaHoraMax, String Localidad)
 	{
 		
+		Date min = generarFecha(FechaHoraMin);
+		Date max = generarFecha(FechaHoraMax);
+		
+		Iterator<Comparendo> lista = arbolBobi.values(min, max).iterator();
+		ArrayList<Comparendo> listaFinal = new ArrayList<Comparendo>();
+		
+		while(lista.hasNext())
+		{
+			Comparendo compi = lista.next();
+			
+			if(compi.darLocalidad().equals(Localidad))
+			{
+				listaFinal.add(compi);
+			}
+		}
+		
+		return listaFinal;
 	}
 	
 	/////////////////////////////////////////////////////////////////////////////////////
@@ -410,19 +464,79 @@ public class Modelo
 	////////////////////////////////////////////////////////////////////////EXTRA////////
 	/////////////////////////////////////////////////////////////////////////////////////
 	
-	public static boolean less(Comparable compi1, Comparable compi2)
+	private String getFechaModBobi(Date fechaMod)
 	{
-		return compi1.compareTo(compi2) < 0;
+		Calendar calndr1 = (Calendar) Calendar.getInstance();
+        calndr1.setTime(fechaMod);
+
+        int dia = calndr1.get(Calendar.DAY_OF_WEEK);
+        String diaLetra = diaNumAdiaLetra(dia);
+	    SimpleDateFormat sf = new SimpleDateFormat("MM");
+	    
+	    String sfecha = sf.format(fechaMod) + "-" + diaLetra;
+	    
+	    return sfecha;
+	    
 	}
 	
-	public static void exchange(Comparable[] copia, int pos1, int pos2)
+	private String diaNumAdiaLetra (int dia)
+	{
+		String dias = "";
+		
+		if(dia == 1) 		dias = "D";
+		else if (dia == 2)	dias = "L";
+		else if (dia == 3) 	dias = "M";
+		else if (dia == 4) 	dias = "I";
+		else if (dia == 5) 	dias = "J";
+		else if (dia == 6) 	dias = "V";
+		else if (dia == 7) 	dias = "S";
+		
+		return dias;
+	}
+	
+	private String corregirMes (String m)
+	{
+		int tam = m.length();
+		if (tam == 1) m = "0" + m; 
+		
+		return m;
+	}
+	
+	private Date generarFecha (String fecha)
+	{
+		String[] dosPartes = fecha.split("-");
+		String[] fecha1 = dosPartes[0].split("/");
+		
+		String fechaFinal = fecha1[0] + "-" + fecha1[1] + "-" + fecha1[2] + "T" + dosPartes[1] + ".000Z";
+		
+		Date fechita;
+		
+		try 
+		{
+			SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+			fechita = formato.parse(fechaFinal);
+		}
+		catch(Exception e)
+		{
+			fechita = null;
+		}
+		
+		return fechita;
+	}
+	
+	private static int lessInfraccion(Comparendo compi1, Comparendo compi2)
+	{
+		return fecha.compare(compi1, compi2);
+	}
+	
+	private static void exchange(Comparable[] copia, int pos1, int pos2)
 	{
 		Comparable tempo = copia[pos1];
 		copia[pos1] = copia[pos2];
 		copia[pos2] = tempo;
 	}
 	
-	public Comparable[] shell_sort_Fecha(Comparendo[] copia)
+	private Comparable[] shell_sort_Fecha(Comparendo[] copia)
 	{
 		int N = copia.length;
 		int h = 1;
@@ -436,7 +550,7 @@ public class Modelo
 		{
 			for (int i = h; i < N; i++)
 			{
-				for(int j = i; j>=h && less(copia[j], copia[j-h]); j = j -h)
+				for(int j = i; j>=h && lessInfraccion(copia[j], copia[j-h]) < 0; j = j -h)
 				{
 					exchange(copia,j,j-h);
 				}

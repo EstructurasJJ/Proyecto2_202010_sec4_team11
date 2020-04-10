@@ -3,13 +3,11 @@ package test.logic;
 import static org.junit.Assert.*;
 
 
-import model.logic.Comparendo;
-import model.logic.Modelo;
-
 import org.junit.Before;
 import org.junit.Test;
 
 import controller.Controller;
+import model.logic.Modelo;
 
 public class TestModelo {
 	

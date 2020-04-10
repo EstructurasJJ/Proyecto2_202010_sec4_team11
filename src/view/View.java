@@ -18,7 +18,8 @@ public class View
 			System.out.println("2. Obtener los M comparendos con mayor gravedad.");
 			System.out.println("3. Buscar los comparendos por mes y día de la semana.");
 			System.out.println("4. Buscar los comparendos que tienen una fecha-hora en un rango y que son de una localidad dada.");
-			System.out.println("6. Exit");
+			System.out.println("8. Visualizar Datos en una Tabla ASCII.");
+			System.out.println("11. Exit");
 			System.out.println("Dar el numero de opcion a resolver, luego oprimir tecla Return: (e.g., 1):");
 		}
 
@@ -29,6 +30,6 @@ public class View
 		
 		public void printModelo(Modelo modelo)
 		{
-			// TODO implementar
+			
 		}
 }

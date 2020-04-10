@@ -139,8 +139,24 @@ public class Controller {
 				}
 
 				break;
+				
+			case 8:
+				
+				System.out.println("Ingrese el número de días del rango.");
+				int diaNum = Integer.parseInt(lector.next());
+				System.out.println("---------");
+				
+				int valor = 0;
+				if (diaNum < 8) valor = 100;
+				else if (diaNum < 16) valor = 250;
+				else if (diaNum < 30) valor = 600;
+				else valor = 1000;
+				
+				modelo.aclararInfoPorRangos(diaNum, valor);
+				
+			break;
 
-			case 6:
+			case 11:
 
 				view.printMessage("--------- \n Hasta pronto !! \n---------"); 
 				lector.close();

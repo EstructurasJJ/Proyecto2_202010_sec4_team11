@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Scanner;
 
+import model.data_structures.ListaEnlazadaQueue;
+import model.data_structures.MaxColaCP;
 import model.logic.Comparendo;
 import model.logic.Modelo;
 import view.View;
@@ -139,7 +141,66 @@ public class Controller {
 				}
 
 				break;
+			case 5:
 				
+				System.out.println("Digite la cantidad de comparendos a mostrar");
+				int compM = lector.nextInt();
+				
+				ListaEnlazadaQueue<Comparendo> comparendosEst=modelo.darMComparendosPolicia(compM);
+				
+				while (comparendosEst.darTamanio()>0)
+				{
+					Comparendo aux=comparendosEst.dequeue();
+					
+					System.out.println(aux.darObjectid());
+					System.out.println(aux.darTipo_Servicio());
+					System.out.println(aux.darInfraccion());
+					System.out.println(aux.darFecha_Hora());
+					System.out.println(aux.darClase_Vehi());
+					System.out.println(aux.darLongitud());
+					System.out.println(aux.darLatitud());
+					System.out.println(MaxColaCP.distance(aux.darLatitud(), aux.darLongitud(), MaxColaCP.LAT_ESTPOL, MaxColaCP.LONG_ESTPOL));
+					System.out.println("--------------------------------------------");
+				}
+				
+				
+				break;
+				
+			case 6:
+				
+				System.out.println("Por favor digite los parámetros a medida que se vayan solicitando");
+				System.out.println("Digite el medio de detección: ");
+				String medDet = lector.next();
+				System.out.println("Clase de vehículo:");
+				String claseVeh = lector.next();
+				System.out.println("Tipo de servicio:");
+				String tipoServ=lector.next();
+				System.out.println("Localidad:");
+				String loca = lector.next();
+				System.out.println("Comparendos a mostrar");
+				int k= lector.nextInt();
+				
+				Comparable[] respComps= modelo.buscarMedioClaseTipoLoca(medDet, claseVeh, tipoServ, loca);
+				
+				for (int i=0;i<respComps.length && k>0;i++)
+				{
+					Comparendo actual=(Comparendo)respComps[i];
+					
+					if (actual.darMedio_Dete().equals(medDet) && actual.darClase_Vehi().equals(claseVeh) && actual.darTipo_Servicio().equals(tipoServ) && actual.darLocalidad().equals(loca))
+					{
+						System.out.println(actual.darObjectid());
+						System.out.println(actual.darTipo_Servicio());
+						System.out.println(actual.darInfraccion());
+						System.out.println(actual.darFecha_Hora());
+						System.out.println(actual.darClase_Vehi());
+						System.out.println(actual.darLocalidad());
+						System.out.println("------------------------------------");
+						k--;
+					}
+					
+				}
+				
+				break;
 			case 8:
 				
 				System.out.println("Ingrese el número de días del rango.");
@@ -155,6 +216,11 @@ public class Controller {
 				modelo.aclararInfoPorRangos(diaNum, valor);
 				
 			break;
+			case 9:
+					
+				modelo.costosTotalesMetodoViejoYAburrido();
+				
+				break;
 
 			case 11:
 

@@ -61,20 +61,6 @@ public class MaxColaCPTest
 
 	}
 
-
-	@Test
-	public void testDarPrimero()
-	{
-		setup1();
-		assertEquals(99,booty.darPrimerNodo().darObjectid());
-
-		setup2();
-		assertEquals("no hay elementos",null,booty.darPrimerNodo());
-
-	}
-	
-
-
 	@Test
 	public void testAgregar()
 	{
@@ -87,8 +73,6 @@ public class MaxColaCPTest
 			booty.agregar(x);
 			
 			assertEquals("Error no da el elemento con mayor prioridad",x,booty.darMax());
-			assertNotNull("Error", booty.darUltNodo());
-			assertNotNull("Error", booty.darPrimerNodo());
 			assertNotNull("Error", booty.darMax());
 			
 			}
@@ -115,5 +99,14 @@ public class MaxColaCPTest
 
 	}
 
+	@Test
+	public void eliminarMaxTest()
+	{
+		setup1();
+		
+		booty.eliminarMax();
+		
+		assertEquals(booty.darSize(),99);
+	}
 	
 }

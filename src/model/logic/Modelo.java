@@ -2,6 +2,7 @@ package model.logic;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,28 +39,28 @@ public class Modelo
 	private double minLongitud = 1000000000;
 	private double maxLatitud = -1000000000;
 	private double maxLongitud = -1000000000;
-	
+
 	//////////////////////////
 	///////ESTRUCTURAS////////
 	//////////////////////////
-	
+
 	private TablaHashSondeoLineal<String, Comparendo> HSLBobi = new TablaHashSondeoLineal<String, Comparendo>(2);
 	private TablaHashEncSeparado<String, Comparendo> HSCJuanjo = new TablaHashEncSeparado<String, Comparendo>(2);
-	
+
 	private MaxHeapCP<Comparendo> datosHeap  = new MaxHeapCP<Comparendo>();
 	private MaxColaCP<Comparendo> datosCola = new MaxColaCP<Comparendo>();
-	
+
 	private ListaEnlazadaQueue<Comparendo> booty = new ListaEnlazadaQueue<Comparendo>();
-	
+
 	private ArbolRojoNegro<Date, Comparendo> arbolBobi = new ArbolRojoNegro<Date, Comparendo>();
 	private ArbolRojoNegro<Double, Comparendo> arbolJuanjo = new ArbolRojoNegro<Double, Comparendo>();
-	
+
 	static Comparator<Comparendo> fecha = new OrdenarComparendoFecha();
-	
+
 	//////////////////////////
 	//////////////////////////
-	
-	
+
+
 	public Modelo()
 	{
 		parteDelComparendo = "";
@@ -293,57 +294,57 @@ public class Modelo
 
 			coordenadas = false;
 			parteDelComparendo = "";
-			
+
 			////////////////////////////////////
 			///////CARGAR LAS ESTRUCTURAS///////
 			////////////////////////////////////
-	
-			String keyBob = getFechaModBobi(compaAgregar.darFecha_Hora());	
-			String keyJuanJo = compaAgregar.darMedio_Dete() + "-" + compaAgregar.darClase_Vehi() + "-" + compaAgregar.darTipo_Servicio() + "-" + compaAgregar.darLocalidad();
-			HSLBobi.putInSet(keyBob, compaAgregar);
-			HSCJuanjo.putInSet(keyJuanJo, compaAgregar);
-			keyBob = "";
-			keyJuanJo = "";
-			
-			
+
+			//String keyBob = getFechaModBobi(compaAgregar.darFecha_Hora());	
+			//String keyJuanJo = compaAgregar.darMedio_Dete() + "-" + compaAgregar.darClase_Vehi() + "-" + compaAgregar.darTipo_Servicio() + "-" + compaAgregar.darLocalidad();
+			//HSLBobi.putInSet(keyBob, compaAgregar);
+			//HSCJuanjo.putInSet(keyJuanJo, compaAgregar);
+			//keyBob = "";
+			//keyJuanJo = "";
+
+
 			//datosHeap.añadir(compaAgregar);
 			//datosCola.agregar(compaAgregar);
-			
-			booty.enqueue(compaAgregar);
-			
-			arbolBobi.put(compaAgregar.darFecha_Hora(), compaAgregar);
-			arbolJuanjo.put(compaAgregar.darLatitud(), compaAgregar);
-			
 
-			
+			booty.enqueue(compaAgregar);
+
+			//arbolBobi.put(compaAgregar.darFecha_Hora(), compaAgregar);
+			//arbolJuanjo.put(compaAgregar.darLatitud(), compaAgregar);
+
+
+
 			////////////////////////////////////
 			////////////////////////////////////
-			
+
 			compaAgregar = null;
 
 
 		}
 	}
-	
+
 
 	////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////TODO PROYECTO///////
 	////////////////////////////////////////////////////////////////////////////////////
-	
+
 	//////////////////////////////
 	////////DAR ESTRUCTURAS///////
 	//////////////////////////////
-	
+
 	public TablaHashSondeoLineal<String, Comparendo> darHashLineal()
 	{
 		return HSLBobi;
 	}
-	
+
 	public TablaHashEncSeparado<String, Comparendo> darHashEncadenado()
 	{
 		return HSCJuanjo;
 	}
-	
+
 	public MaxHeapCP<Comparendo> darMaxHeapCP()
 	{
 		return datosHeap;
@@ -353,167 +354,504 @@ public class Modelo
 	{
 		return datosCola;
 	}
-	
+
 	public ListaEnlazadaQueue<Comparendo> darListEnlzadaCola()
 	{
 		return booty;
 	}
-	
+
 	public ArbolRojoNegro<Date, Comparendo> darArbolBobi()
 	{
 		return arbolBobi;
 	}
-	
+
 	public ArbolRojoNegro<Double, Comparendo> darArbolJuanjo()
 	{
 		return arbolJuanjo;
 	}
-	
+
 	/////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////TODO BOBBY////////
 	/////////////////////////////////////////////////////////////////////////////////////
-	
+
 	public ArrayList<Comparendo> darMComparendosGravedad(int m)
 	{
 		ArrayList listica = new ArrayList<Comparendo>();
-		
+
 		int i = 0;
-		
+
 		while (i < m)
 		{
 			Comparendo compi = datosHeap.devolverMax();
 			listica.add(compi);
-			
+
 			i++;
 		}
-		
+
 		return listica;
-		
+
 	}
-	
+
 	public Iterator<Comparendo> buscarPorMesYDia(String mes, String dia)
 	{
 		String mesi = corregirMes(mes);
 		String llave = mesi + "-" + dia;
-		
+
 		Iterator<Comparendo> lista = HSLBobi.getSet(llave);
 		return lista;
 	}
-	
+
 	public ArrayList<Comparendo> buscarFechaHoraLocalidad (String FechaHoraMin, String FechaHoraMax, String Localidad)
 	{
-		
+
 		Date min = generarFecha(FechaHoraMin);
 		Date max = generarFecha(FechaHoraMax);
-		
+
 		Iterator<Comparendo> lista = arbolBobi.values(min, max).iterator();
 		ArrayList<Comparendo> listaFinal = new ArrayList<Comparendo>();
-		
+
 		while(lista.hasNext())
 		{
 			Comparendo compi = lista.next();
-			
+
 			if(compi.darLocalidad().equals(Localidad))
 			{
 				listaFinal.add(compi);
 			}
 		}
-		
+
 		return listaFinal;
 	}
-	
+
 	/////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////TODO JUANJO///////
 	/////////////////////////////////////////////////////////////////////////////////////
-	
-	public MaxColaCP<Comparendo> darMComparendosPolicia(int m)
+
+	public ListaEnlazadaQueue<Comparendo> darMComparendosPolicia(int m)
 	{
-		return null;
+		ListaEnlazadaQueue<Comparendo> respuesta=new ListaEnlazadaQueue<Comparendo>();
+
+		while (m>0)
+		{
+			respuesta.enqueue(datosCola.eliminarMax());
+
+			m--;
+		}
+
+		return respuesta;
 	}
-	
-	public void buscarMedioClaseTipoLoca(String Medio, String Clase, String Tipo, String Localidad)
+
+	public Comparable[] buscarMedioClaseTipoLoca(String Medio, String Clase, String Tipo, String Localidad)
 	{
-		
+		String key = Medio + "-"  + Clase + "-" + Tipo + "-" + Localidad;
+
+		Comparendo[] comparendos = copiarComparendosEncadenados(key);
+		Comparable [] ordenados = shell_sort_Fecha(comparendos);
+
+		return ordenados;
+
 	}
-	
+
+
+
+
+
 	public void buscarLatitudTipo (String Latitud, String Tipo)
 	{
-		
+
 	}
-	
+
 	/////////////////////////////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////TODO AMBOS////////
 	/////////////////////////////////////////////////////////////////////////////////////
-	
+
 	public void aclararInfoPorRangos (int N, int valor)
 	{
 		ArrayList<String> listaFechas = generarListaDeFechas();
 		TablaHashSondeoLineal<String, Comparendo> bobi = pasarComparendoATablaBobi();
-		
+
 		System.out.println("Rango de fechas          |   Comparendos durante el año");
 		System.out.println("-------------------------------------------------------");
-		
+
 		int i = 0;
 		while (i < listaFechas.size())
 		{
 			int j = 0;
 			int total = 0;
-			
+
 			String fecha2 = "";
 			String fecha1 = listaFechas.get(i);
-			
+
 			while(j < N && i < listaFechas.size())
 			{
 				Iterator subConjunto = bobi.getSet(listaFechas.get(i));
 				int contador = numeroComparendosEnPosTabla(subConjunto);
-				
+
 				total = total + contador;
 				fecha2 = listaFechas.get(i);
-				
+
 				i++;
 				j++;
 			}
-			
+
 			String asteriscos = generarAsteriscos(valor, total);
 			System.out.println(fecha1 + "-" + fecha2 + "    |   " + asteriscos);
-			
+
 		}
 
 	}
-	
-	public ArrayList<String> costosTotalesMetodoViejoYAburrido()
+
+	public ArrayList<String[]> costosTotalesMetodoViejoYAburrido()
 	{
-		return null;
+		Comparendo[] datos= copiarComparendos();
+		Comparable[] ordenados= shell_sort_Fecha(datos);
+		ArrayList<String[]> respuesta=new ArrayList<String[]>();
+		int costoTotal=0;
+		double diasPromedio;
+		int minT400=400, maxT400=0, minT40=400, maxT40=0, minT4=400, maxT4=0, cantidad400=0, cantidad40=0,cantidad4=0;
+		int totDT4=0,totDT40=0, totDT400=0;
+		int contadorDiario=0;
+		SimpleDateFormat sdf= new SimpleDateFormat("dd/MM/yyyy");
+		Date diaDelAnio=null, nextYear=null;
+		int parteDelArreglo = 0;
+		int valorMulta=0;
+		boolean salir=false;
+		int contadorEspera=0;
+
+		try 
+		{
+			diaDelAnio= sdf.parse("01/01/2018");
+			nextYear=sdf.parse("01/01/2019");
+		}
+		catch (ParseException e) {e.printStackTrace();}
+
+
+		while(daysBetween(diaDelAnio, nextYear)>0)
+		{
+
+			salir=false;
+
+			while (contadorDiario<150 && parteDelArreglo<ordenados.length && !salir)
+			{
+				Comparendo actual=(Comparendo)ordenados[parteDelArreglo];
+				Date fechaAnalizada=actual.darFecha_Hora();
+				String descMulta=actual.darDes_Infrac();
+
+
+				if (esAntesDMY(diaDelAnio,fechaAnalizada))
+				{
+					salir=true;
+				}
+				else
+				{
+					if (descMulta.contains("SERA INMOVILIZADO") || descMulta.contains("SERÁ INMOVILIZADO"))
+					{
+						valorMulta=400;
+						cantidad400++;
+					}
+					else if (descMulta.contains("LICENCIA DE CON"))
+					{
+						valorMulta=40;
+						cantidad40++;
+					}
+					else
+					{
+						valorMulta=4;
+						cantidad4++;
+					}
+
+					if (mismoDMY(diaDelAnio,fechaAnalizada))
+					{
+						if (valorMulta==4)
+						{
+							minT4=0;
+						}
+						else if (valorMulta==40)
+						{
+							minT40=0;
+						}
+						else
+						{
+							minT400=0;
+						}
+					}
+					else
+					{
+						int diasDeEspera=daysBetween(fechaAnalizada,diaDelAnio);
+						costoTotal += (diasDeEspera*valorMulta);
+
+
+						if (valorMulta==4)
+						{ 
+							totDT4 += diasDeEspera;
+
+							if (diasDeEspera>maxT4)
+							{
+								maxT4=diasDeEspera;
+							}
+							if(diasDeEspera<minT4)
+							{
+								minT4=diasDeEspera;
+							}
+						}
+						else if (valorMulta==40)
+						{
+							totDT40 += diasDeEspera;
+
+							if (diasDeEspera>maxT40)
+							{
+								maxT40=diasDeEspera;
+							}
+							if(diasDeEspera<minT40)
+							{
+								minT40=diasDeEspera;
+							}
+						}
+						else
+						{
+							totDT400 += diasDeEspera;
+
+							if (diasDeEspera>maxT400)
+							{
+								maxT400=diasDeEspera;
+							}
+							if(diasDeEspera<minT400)
+							{
+								minT400=diasDeEspera;
+							}
+						}
+
+					}
+					contadorDiario++;
+					parteDelArreglo++;
+				}
+			}
+
+			//Significa que ya leí los 1500 pero no he cambiado de fecha 
+			if(parteDelArreglo<ordenados.length && (mismoDMY(diaDelAnio,((Comparendo)ordenados[parteDelArreglo]).darFecha_Hora()) || ((Comparendo)ordenados[parteDelArreglo]).darFecha_Hora().before(diaDelAnio)) )
+			{
+				int contadorAux=parteDelArreglo;
+				Date fechaAuxiliar=((Comparendo)ordenados[contadorAux]).darFecha_Hora();
+
+				while (contadorAux<ordenados.length && (mismoDMY(diaDelAnio,fechaAuxiliar) || ((Comparendo)ordenados[contadorAux]).darFecha_Hora().before(diaDelAnio)))
+				{
+
+					contadorEspera++;
+					contadorAux++;
+					if (contadorAux<ordenados.length)
+					{
+						fechaAuxiliar=((Comparendo)ordenados[contadorAux]).darFecha_Hora();
+					}
+
+				}			
+			}
+
+			String[] pars = new String [3];
+			pars[0] = sdf.format(diaDelAnio);
+			if (contadorDiario==151)
+			{
+				pars[1] = "150";
+			}
+			else
+			{
+				pars[1]=contadorDiario+"";
+			}
+
+			pars[2] = contadorEspera+"";
+			respuesta.add(pars);
+
+			contadorEspera=0;
+			contadorDiario=0;
+			diaDelAnio=avanzarD(diaDelAnio);
+
+
+		}
+
+
+		//Proceso los datos que quedaron faltando del 31 de diciembre, supongo que se leyeron todos los faltantes el primero de enero del 2019
+		if (parteDelArreglo<ordenados.length)
+		{
+			String multisha="";
+
+			while (parteDelArreglo<ordenados.length)
+			{
+				Comparendo aux=(Comparendo)ordenados[parteDelArreglo];
+				multisha = aux.darDes_Infrac();
+				Date analizada=aux.darFecha_Hora();
+
+				if (multisha.contains("SERA INMOVILIZADO") || multisha.contains("SERÁ INMOVILIZADO"))
+				{
+					valorMulta=400;
+					cantidad400++;
+				}
+				else if (multisha.contains("LICENCIA DE CONDUC"))
+				{
+					valorMulta=40;
+					cantidad40++;
+				}
+				else
+				{
+					valorMulta=4;
+					cantidad4++;
+				}
+
+				int espera=daysBetween(analizada, nextYear);
+				
+				costoTotal += (espera*valorMulta);
+
+
+				if (valorMulta==4)
+				{ 
+					totDT4 += espera;
+
+					if (espera>maxT4)
+					{
+						maxT4=espera;
+					}
+					if(espera<minT4)
+					{
+						minT4=espera;
+					}
+				}
+				else if (valorMulta==40)
+				{
+					totDT40 += espera;
+
+					if (espera>maxT40)
+					{
+						maxT40=espera;
+					}
+					if(espera<minT40)
+					{
+						minT40=espera;
+					}
+				}
+				else
+				{
+					totDT400 +=espera;
+
+					if (espera>maxT400)
+					{
+						maxT400=espera;
+					}
+					if(espera<minT400)
+					{
+						minT400=espera;
+					}
+				}
+
+				parteDelArreglo++;
+			}
+		}
+
+		System.out.println("El costo total es de: $" + costoTotal);
+		System.out.println("El tiempo total de espera de los comparendos fue de: "+(totDT4+totDT40+totDT400)+" días");
+		System.out.println("En promedio, un comparendo debe esperar: "+((totDT4+totDT40+totDT400)/ordenados.length)+" días");
+		
+		System.out.println("A continuación se esperan los datos de interés de cada tipo de comparendo según su multa:");
+		System.out.println("Costo Diario\t|Tiempo Mínimo\t|Tiempo Promedio\t|Tiempo Max");
+		System.out.println("\t4\t|"+minT4+"\t\t|"+(totDT4/cantidad4)+"\t\t\t|"+maxT4);
+		System.out.println("\t40\t|"+minT40+"\t\t|"+(totDT40/cantidad40)+"\t\t\t|"+maxT40);
+		System.out.println("\t400\t|"+minT400+"\t\t|"+(totDT400/cantidad400)+"\t\t\t|"+maxT400);
+		return respuesta;
 	}
-	
+
+
+	private int daysBetween (Date actual, Date analizado)
+	{
+		int respuesta=0;
+		String cadenaActual="", cadenaAnalizado="";
+
+		SimpleDateFormat sdf= new SimpleDateFormat("dd/MM/yyyy");
+
+		try
+		{
+			cadenaActual=sdf.format(actual);
+			cadenaAnalizado=sdf.format(analizado);
+		}
+		catch(Exception e) {e.printStackTrace();}
+
+		while (!cadenaActual.equals(cadenaAnalizado))
+		{
+			actual=avanzarD(actual);
+			respuesta++;
+			cadenaActual=sdf.format(actual);
+		}
+
+		return respuesta;
+	}
+
+	private boolean mismoDMY(Date fecha1, Date fecha2)
+	{
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		String cadena1= sdf.format(fecha1);
+		String cadena2=sdf.format(fecha2);
+
+		return cadena1.equals(cadena2);
+	}
+
+	private Date avanzarD(Date inicial)
+	{
+		Calendar c = Calendar.getInstance(); 
+		c.setTime(inicial); 
+		c.add(Calendar.DATE, 1);
+		inicial = c.getTime();
+
+		return inicial;
+	}
+
+	private boolean esAntesDMY(Date fecha1, Date fecha2) 
+	{
+		SimpleDateFormat sdf=new SimpleDateFormat("dd/MM/yyyy");
+		String cadena1=sdf.format(fecha1), cadena2=sdf.format(fecha2);
+		String[] arreglo1=cadena1.split("/"), arreglo2=cadena2.split("/");
+		boolean respuesta=false;
+
+		if (Integer.parseInt(arreglo1[1])<Integer.parseInt(arreglo2[1]))
+		{
+			respuesta=true;
+		}
+		else if (Integer.parseInt(arreglo1[1])>Integer.parseInt(arreglo2[1]))
+		{
+			return false;
+		}
+		else if (Integer.parseInt(arreglo1[0])<Integer.parseInt(arreglo2[0]))
+		{
+			respuesta=true;
+		}
+
+		return respuesta;
+
+	}
+
 	public void nuevoModeloQueEsMejorYAhorraPlata()
 	{
-		
+
 	}
-	
+
 	/////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////EXTRA////////
 	/////////////////////////////////////////////////////////////////////////////////////
-	
+
 	private String getFechaModBobi(Date fechaMod)
 	{
 		Calendar calndr1 = (Calendar) Calendar.getInstance();
-        calndr1.setTime(fechaMod);
+		calndr1.setTime(fechaMod);
 
-        int dia = calndr1.get(Calendar.DAY_OF_WEEK);
-        String diaLetra = diaNumAdiaLetra(dia);
-	    SimpleDateFormat sf = new SimpleDateFormat("MM");
-	    
-	    String sfecha = sf.format(fechaMod) + "-" + diaLetra;
-	    
-	    return sfecha;
-	    
+		int dia = calndr1.get(Calendar.DAY_OF_WEEK);
+		String diaLetra = diaNumAdiaLetra(dia);
+		SimpleDateFormat sf = new SimpleDateFormat("MM");
+
+		String sfecha = sf.format(fechaMod) + "-" + diaLetra;
+
+		return sfecha;
+
 	}
-	
+
 	private String diaNumAdiaLetra (int dia)
 	{
 		String dias = "";
-		
+
 		if(dia == 1) 		dias = "D";
 		else if (dia == 2)	dias = "L";
 		else if (dia == 3) 	dias = "M";
@@ -521,27 +859,27 @@ public class Modelo
 		else if (dia == 5) 	dias = "J";
 		else if (dia == 6) 	dias = "V";
 		else if (dia == 7) 	dias = "S";
-		
+
 		return dias;
 	}
-	
+
 	private String corregirMes (String m)
 	{
 		int tam = m.length();
 		if (tam == 1) m = "0" + m; 
-		
+
 		return m;
 	}
-	
+
 	private Date generarFecha (String fecha)
 	{
 		String[] dosPartes = fecha.split("-");
 		String[] fecha1 = dosPartes[0].split("/");
-		
+
 		String fechaFinal = fecha1[0] + "-" + fecha1[1] + "-" + fecha1[2] + "T" + dosPartes[1] + ".000Z";
-		
+
 		Date fechita;
-		
+
 		try 
 		{
 			SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
@@ -551,41 +889,41 @@ public class Modelo
 		{
 			fechita = null;
 		}
-		
+
 		return fechita;
 	}
-	
+
 	private String fechaAmbosFormato(Date fechaMod)
 	{
 		SimpleDateFormat sf = new SimpleDateFormat("yyy/MM/dd");
 		return sf.format(fechaMod);
 	}
-	
+
 	private ArrayList<String> generarListaDeFechas()
 	{
 		Comparendo[] aOrdenar = copiarComparendos();
 		Comparable[] ordenados = shell_sort_Fecha(aOrdenar);
 		ArrayList<String> listaFechas = new ArrayList<String>();
-		
+
 		int i = 0;
 		String fecha = "";
-		
+
 		while(i < ordenados.length)
 		{
 			String sf = fechaAmbosFormato(((Comparendo) ordenados[i]).darFecha_Hora());
-			
+
 			if(!fecha.equals(sf))
 			{
 				fecha = sf;
 				listaFechas.add(fecha);
 			}
-			
+
 			i++;
 		}
-		
+
 		return listaFechas;
 	}
-	
+
 	private TablaHashSondeoLineal<String, Comparendo> pasarComparendoATablaBobi()
 	{
 		TablaHashSondeoLineal<String, Comparendo> tablitaNueva = new TablaHashSondeoLineal<String, Comparendo>(2);
@@ -595,28 +933,28 @@ public class Modelo
 		{
 			Comparendo compi = actual.darData();
 			String fecha = fechaAmbosFormato(compi.darFecha_Hora());
-			
+
 			tablitaNueva.putInSet(fecha, compi);
 			actual = actual.darSiguiente();
 
 		}
-		
+
 		return tablitaNueva;
 	}
 
 	private int numeroComparendosEnPosTabla(Iterator subConjunto)
 	{
 		int contador = 0;
-		
+
 		while(subConjunto.hasNext())
 		{
 			contador++;
 			subConjunto.next();
 		}
-		
+
 		return contador;
 	}
-	
+
 	private String generarAsteriscos(int valor, int cantidad)
 	{
 		String aste = "";
@@ -627,10 +965,10 @@ public class Modelo
 		{
 			aste = aste + "*";
 		}
-		
+
 		return aste;
 	}
-	
+
 	private Comparendo[] copiarComparendos()
 	{
 		Comparendo[] comparendosCopia = new Comparendo[booty.darTamanio()];
@@ -650,19 +988,19 @@ public class Modelo
 
 		return comparendosCopia;
 	}
-	
+
 	private static int lessFecha(Comparendo compi1, Comparendo compi2)
 	{
 		return fecha.compare(compi1, compi2);
 	}
-	
+
 	private static void exchange(Comparable[] copia, int pos1, int pos2)
 	{
 		Comparable tempo = copia[pos1];
 		copia[pos1] = copia[pos2];
 		copia[pos2] = tempo;
 	}
-	
+
 	private Comparable[] shell_sort_Fecha(Comparendo[] copia)
 	{
 		int N = copia.length;
@@ -690,10 +1028,36 @@ public class Modelo
 
 	}
 
+
+	private Comparendo[] copiarComparendosEncadenados(String key)
+	{
+		Iterator<Comparendo> comparendos = HSCJuanjo.getSet(key), sizeComparendos=HSCJuanjo.getSet(key);
+
+		int s=0;
+		if (sizeComparendos!=null)
+		{
+			while(sizeComparendos.hasNext())
+			{
+				sizeComparendos.next();
+				s++;
+			}	
+		}
+
+
+		Comparendo[] respuesta =  new Comparendo[s];
+		int contador=0;
+		if (comparendos!=null)
+		{
+			while (comparendos.hasNext())
+			{
+				Comparendo aux = comparendos.next();
+				respuesta[contador] = aux;
+				contador++;
+			}
+		}
+
+
+		return respuesta;
+	}
+
 }
-
-
-
-
-
-

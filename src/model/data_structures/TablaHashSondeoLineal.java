@@ -238,6 +238,60 @@ public class TablaHashSondeoLineal <K extends Comparable<K> ,V extends Comparabl
 		return listaDeDatos.iterator();
 	}
 
+	
+	
+	//////////////////////////////////////////////////////////////////////////////////////////////ESPECIAL
 
+	public void putInSetEspecial(K key, V valor, int prioridad) 
+	{
+		if (key != null)
+		{
+			double d = Datos;
+			double c = Capacidad;
+
+			if (d >= c*0.75)
+			{
+				resize(Capacidad*2);
+				rehashes++;
+			}
+
+			int parar = hash(key);
+			int i = parar;
+
+			do
+			{
+				if (keys[i] == null)
+				{
+					vals[i] = new ListaEnlazadaQueue<>();
+
+					keys[i] = key;
+
+					if (prioridad == 1) vals[i].push(valor);
+					else vals[i].enqueue(valor);
+
+					Datos++;
+
+					return;
+				}
+				else
+				{
+					if (keys[i].equals(key))
+					{
+						if (prioridad == 1) vals[i].push(valor);
+						else vals[i].enqueue(valor);
+
+						Datos++;
+						return;
+					}
+				}
+
+				i = (i+1) % Capacidad;
+			}
+			while(i != parar);
+
+		}
+
+	}
+	
 
 }

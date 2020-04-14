@@ -58,6 +58,24 @@ public class ListaEnlazadaQueue <T extends Comparable<T>> implements Iterable, I
 		}
 		tamanio++;
 	}
+	
+	public void push (T elemento)
+	{
+		Node<T> nuevo = new Node<T>(elemento);
+		
+		if (primerNodo == null)
+		{
+			primerNodo = nuevo;
+			lastNode=nuevo;
+		}
+		else
+		{
+			nuevo.cambiarSiguiente(primerNodo);
+			primerNodo = nuevo;
+		}
+		
+		tamanio++;
+	}
 
 	public T dequeue() 
 	{
@@ -112,4 +130,6 @@ public class ListaEnlazadaQueue <T extends Comparable<T>> implements Iterable, I
 		}
 
 	}
+	
+	
 }

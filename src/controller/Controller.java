@@ -46,11 +46,12 @@ public class Controller {
 
 				//Cargar el archivo
 
-				modelo.leerGeoJson(COTEJO);
+				modelo.leerGeoJson(RUTAGEOJASON);
 
 				view.printMessage("Archivo GeoJSon Cargado");
 				view.printMessage("Numero total de comparendos en: ");
 				
+				System.out.println("\t Cola: " + modelo.darListEnlzadaCola().darTamanio());
 				System.out.println("\t MaxColaCP: " + modelo.darMaxCola().darSize());
 				System.out.println("\t MaxHeapCP: " + modelo.darMaxHeapCP().darTamaño());
 				System.out.println("\t TablaHashEncSeparando: " + modelo.darHashEncadenado().darNumElementos());
@@ -141,6 +142,7 @@ public class Controller {
 				}
 
 				break;
+				
 			case 5:
 				
 				System.out.println("Digite la cantidad de comparendos a mostrar");
@@ -201,6 +203,7 @@ public class Controller {
 				}
 				
 				break;
+				
 			case 8:
 				
 				System.out.println("Ingrese el número de días del rango.");
@@ -216,11 +219,18 @@ public class Controller {
 				modelo.aclararInfoPorRangos(diaNum, valor);
 				
 			break;
+			
 			case 9:
 					
 				modelo.costosTotalesMetodoViejoYAburrido();
 				
-				break;
+			break;
+			
+			case 10:
+				
+				modelo.nuevoModeloQueEsMejorYAhorraPlata();
+				
+			break;
 
 			case 11:
 

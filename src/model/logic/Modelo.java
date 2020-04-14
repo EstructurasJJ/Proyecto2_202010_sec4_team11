@@ -1028,7 +1028,10 @@ public class Modelo
 		while(conjunto.hasNext())
 		{
 			Comparendo compi = (Comparendo) conjunto.next();
-			actual.enqueue(compi);		
+			
+			int clasi = clasificacion(compi);
+			if(clasi == 1) actual.push(compi);
+			else actual.enqueue(compi);		
 		}
 
 		return actual;

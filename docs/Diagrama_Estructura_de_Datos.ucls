@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<class-diagram version="1.2.4" icons="true" always-add-relationships="false" generalizations="true" realizations="true" 
-  associations="true" dependencies="false" nesting-relationships="true" router="FAN">  
+<class-diagram version="1.2.4" icons="true" automaticImage="PNG" always-add-relationships="false" generalizations="true" 
+  realizations="true" associations="true" dependencies="false" nesting-relationships="true" router="FAN">  
   <class id="1" language="java" name="model.data_structures.ArbolRojoNegro" project="esqueleto_T0_202010" 
     file="/esqueleto_T0_202010/src/model/data_structures/ArbolRojoNegro.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="177" y="342"/>    
+    <position height="-1" width="-1" x="327" y="1147"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -57,16 +57,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="7" language="java" name="model.data_structures.MaxColaCP.ListIterator" project="esqueleto_T0_202010" 
-    file="/esqueleto_T0_202010/src/model/data_structures/MaxColaCP.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="-1" width="-1" x="355" y="899"/>    
-    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
-      sort-features="false" accessors="true" visibility="true">      
-      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
-      <operations public="true" package="true" protected="true" private="true" static="true"/>    
-    </display>  
-  </class>  
-  <class id="8" language="java" name="model.data_structures.TablaHashEncSeparado" project="esqueleto_T0_202010" 
+  <class id="7" language="java" name="model.data_structures.TablaHashEncSeparado" project="esqueleto_T0_202010" 
     file="/esqueleto_T0_202010/src/model/data_structures/TablaHashEncSeparado.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="994" y="164"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -75,7 +66,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <interface id="9" language="java" name="model.data_structures.ITablaHash" project="esqueleto_T0_202010" 
+  <interface id="8" language="java" name="model.data_structures.ITablaHash" project="esqueleto_T0_202010" 
     file="/esqueleto_T0_202010/src/model/data_structures/ITablaHash.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="725" y="473"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -84,7 +75,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </interface>  
-  <class id="10" language="java" name="model.data_structures.ListaEnlazadaQueue" project="esqueleto_T0_202010" 
+  <class id="9" language="java" name="model.data_structures.ListaEnlazadaQueue" project="esqueleto_T0_202010" 
     file="/esqueleto_T0_202010/src/model/data_structures/ListaEnlazadaQueue.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="986" y="546"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -93,7 +84,7 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <class id="11" language="java" name="model.data_structures.MaxHeapCP" project="esqueleto_T0_202010" 
+  <class id="10" language="java" name="model.data_structures.MaxHeapCP" project="esqueleto_T0_202010" 
     file="/esqueleto_T0_202010/src/model/data_structures/MaxHeapCP.java" binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="397" y="172"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -102,57 +93,60 @@
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <nesting id="12">    
-    <end type="SOURCE" refId="10"/>    
+  <association id="11">    
+    <end type="SOURCE" refId="7" navigable="false">      
+      <attribute id="12" name="valores">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="13" minimum="0" maximum="2147483647">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="9" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <realization id="14">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="8"/>  
+  </realization>  
+  <association id="15">    
+    <end type="SOURCE" refId="6" navigable="false">      
+      <attribute id="16" name="siguiente">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="17" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="6" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <nesting id="18">    
+    <end type="SOURCE" refId="9"/>    
     <end type="TARGET" refId="5"/>  
   </nesting>  
-  <realization id="13">    
+  <association id="19">    
+    <bendpoint x="958" y="861"/>    
+    <end type="SOURCE" refId="9" navigable="false">      
+      <attribute id="20" name="primerNodo">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="21" minimum="0" maximum="1">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="6" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <realization id="22">    
     <bendpoint x="1101" y="752"/>    
-    <end type="SOURCE" refId="10"/>    
+    <end type="SOURCE" refId="9"/>    
     <end type="TARGET" refId="2"/>  
   </realization>  
-  <association id="14">    
-    <bendpoint x="473" y="1051"/>    
-    <end type="SOURCE" refId="7" navigable="false">      
-      <attribute id="15" name="current">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </attribute>      
-      <multiplicity id="16" minimum="0" maximum="1">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="6" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="17">    
-    <bendpoint x="914" y="789"/>    
-    <end type="SOURCE" refId="10" navigable="false">      
-      <attribute id="18" name="lastNode">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </attribute>      
-      <multiplicity id="19" minimum="0" maximum="1">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="6" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="20">    
-    <end type="SOURCE" refId="4" navigable="false">      
-      <attribute id="21" name="vals">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </attribute>      
-      <multiplicity id="22" minimum="0" maximum="2147483647">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="10" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
   <association id="23">    
-    <bendpoint x="528" y="885"/>    
-    <end type="SOURCE" refId="3" navigable="false">      
-      <attribute id="24" name="firstNode">        
+    <bendpoint x="914" y="789"/>    
+    <end type="SOURCE" refId="9" navigable="false">      
+      <attribute id="24" name="lastNode">        
         <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
       <multiplicity id="25" minimum="0" maximum="1">        
@@ -163,8 +157,9 @@
     <display labels="true" multiplicity="true"/>  
   </association>  
   <association id="26">    
-    <end type="SOURCE" refId="6" navigable="false">      
-      <attribute id="27" name="siguiente">        
+    <bendpoint x="665" y="860"/>    
+    <end type="SOURCE" refId="5" navigable="false">      
+      <attribute id="27" name="actual">        
         <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
       <multiplicity id="28" minimum="0" maximum="1">        
@@ -174,65 +169,18 @@
     <end type="TARGET" refId="6" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <realization id="29">    
-    <end type="SOURCE" refId="4"/>    
-    <end type="TARGET" refId="9"/>  
-  </realization>  
-  <association id="30">    
-    <bendpoint x="665" y="860"/>    
-    <end type="SOURCE" refId="5" navigable="false">      
-      <attribute id="31" name="actual">        
+  <association id="29">    
+    <end type="SOURCE" refId="4" navigable="false">      
+      <attribute id="30" name="vals">        
         <position height="0" width="0" x="0" y="0"/>      
       </attribute>      
-      <multiplicity id="32" minimum="0" maximum="1">        
+      <multiplicity id="31" minimum="0" maximum="2147483647">        
         <position height="0" width="0" x="0" y="0"/>      
       </multiplicity>    
     </end>    
-    <end type="TARGET" refId="6" navigable="true"/>    
+    <end type="TARGET" refId="9" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="33">    
-    <bendpoint x="958" y="861"/>    
-    <end type="SOURCE" refId="10" navigable="false">      
-      <attribute id="34" name="primerNodo">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </attribute>      
-      <multiplicity id="35" minimum="0" maximum="1">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="6" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="36">    
-    <end type="SOURCE" refId="8" navigable="false">      
-      <attribute id="37" name="valores">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </attribute>      
-      <multiplicity id="38" minimum="0" maximum="2147483647">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="10" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="39">    
-    <bendpoint x="493" y="975"/>    
-    <end type="SOURCE" refId="3" navigable="false">      
-      <attribute id="40" name="lastNode">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </attribute>      
-      <multiplicity id="41" minimum="0" maximum="1">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="6" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <nesting id="42">    
-    <end type="SOURCE" refId="3"/>    
-    <end type="TARGET" refId="7"/>  
-  </nesting>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
     sort-features="false" accessors="true" visibility="true">    
     <attributes public="true" package="true" protected="true" private="true" static="true"/>    

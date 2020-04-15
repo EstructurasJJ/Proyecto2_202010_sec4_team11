@@ -299,20 +299,20 @@ public class Modelo
 			///////CARGAR LAS ESTRUCTURAS///////
 			////////////////////////////////////
 
-			//String keyBob = getFechaModBobi(compaAgregar.darFecha_Hora());	
+			String keyBob = getFechaModBobi(compaAgregar.darFecha_Hora());	
 			String keyJuanJo = compaAgregar.darMedio_Dete() + "-" + compaAgregar.darClase_Vehi() + "-" + compaAgregar.darTipo_Servicio() + "-" + compaAgregar.darLocalidad();
-			//HSLBobi.putInSet(keyBob, compaAgregar);
+			HSLBobi.putInSet(keyBob, compaAgregar);
 			HSCJuanjo.putInSet(keyJuanJo, compaAgregar);
-			//keyBob = "";
+			keyBob = "";
 			keyJuanJo = "";
 
-
+			//TODO OJO
 			//datosHeap.añadir(compaAgregar);
-			datosCola.agregar(compaAgregar);
+			//datosCola.agregar(compaAgregar);
 
 			booty.enqueue(compaAgregar);
 
-			//arbolBobi.put(compaAgregar.darFecha_Hora(), compaAgregar);
+			arbolBobi.put(compaAgregar.darFecha_Hora(), compaAgregar);
 			arbolJuanjo.put(compaAgregar.darLatitud(), compaAgregar);
 
 
@@ -721,6 +721,11 @@ public class Modelo
 		System.out.println("\t4\t|"+minT4+"\t\t|"+(totDT4/cantidad4)+"\t\t\t|"+maxT4);
 		System.out.println("\t40\t|"+minT40+"\t\t|"+(totDT40/cantidad40)+"\t\t\t|"+maxT40);
 		System.out.println("\t400\t|"+minT400+"\t\t|"+(totDT400/cantidad400)+"\t\t\t|"+maxT400);
+		
+		System.out.println("Numero de comparendo de 400: " + cantidad400);
+		System.out.println("Numero de comparendo de 40: " + cantidad40);
+		System.out.println("Numero de comparendo de 4: " + cantidad4);
+		System.out.println("---------------");
 		return respuesta;
 	}
 

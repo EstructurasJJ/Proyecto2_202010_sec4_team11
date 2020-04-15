@@ -705,8 +705,6 @@ public class Modelo
 		return respuesta;
 	}
 
-
-
 	public void nuevoModeloQueEsMejorYAhorraPlata()
 	{
 
@@ -959,7 +957,7 @@ public class Modelo
 	{
 		String multisha = compi.darDes_Infrac();
 
-		if (multisha.contains("LICENCIA DE CONDUC") || multisha.contains("SERA INMOVILIZADO") || multisha.contains("SERÁ INMOVILIZADO")) return 1;
+		if (multisha.contains("INMOVILIZADO") || multisha.contains("LICENCIA DE CONDUC") || multisha.contains("SERA INMOVILIZADO") || multisha.contains("SERÁ INMOVILIZADO")) return 1;
 		else return 2;
 	}
 
@@ -994,7 +992,7 @@ public class Modelo
 	{
 		String multisha = compi.darDes_Infrac();
 
-		if (multisha.contains("SERA INMOVILIZADO") || multisha.contains("SERÁ INMOVILIZADO")) return 400;
+		if (multisha.contains("INMOVILIZADO") || multisha.contains("SERA INMOVILIZADO") || multisha.contains("SERÁ INMOVILIZADO")) return 400;
 		else if (multisha.contains("LICENCIA DE CONDUC")) return 40;
 		else return 4;
 
@@ -1127,7 +1125,7 @@ public class Modelo
 	
 	private int calcularValorMulta(String desc)
 	{
-		if (desc.contains("SERA INMOVILIZADO") || desc.contains("SERÁ INMOVILIZADO")||desc.contains("INMOVILIZADO"))
+		if ((desc.contains("INMOVILIZADO") && desc.contains("SER"))|| desc.contains("SERÁ INMOVILIZADO")|| (desc.contains("INMOVILIZADO") && desc.contains("SER")))
 		{
 			return 400;
 		}

@@ -46,7 +46,7 @@ public class Controller {
 
 				//Cargar el archivo
 
-				modelo.leerGeoJson(RUTAGEOJASON);
+				modelo.leerGeoJson(COTEJO);
 
 				view.printMessage("Archivo GeoJSon Cargado");
 				view.printMessage("Numero total de comparendos en: ");
@@ -169,7 +169,7 @@ public class Controller {
 				break;
 				
 			case 6:
-				
+				String b="";
 				System.out.println("Por favor digite los parámetros a medida que se vayan solicitando");
 				System.out.println("Digite el medio de detección: ");
 				String medDet = lector.next();
@@ -177,18 +177,22 @@ public class Controller {
 				String claseVeh = lector.next();
 				System.out.println("Tipo de servicio:");
 				String tipoServ=lector.next();
-				System.out.println("Localidad:");
-				String loca = lector.next();
+				System.out.println("Por favor ingrese la localidad del comparendo a buscar. Si son palabras separadas, por favor escriba en una línea diferente cada una");
+				b =lector.next();
+				if (b.equals("SANTA") || b.equals("BARRIOS") || b.equals("CIUDAD")|| b.equals("SAN") || b.equals("BOGOTA")||b.equals("RAFAEL")||b.equals("PUENTE")||b.equals("ANTONIO"))
+				{
+					b=b+ " "+lector.next();
+				}
 				System.out.println("Comparendos a mostrar");
 				int k= lector.nextInt();
 				
-				Comparable[] respComps= modelo.buscarMedioClaseTipoLoca(medDet, claseVeh, tipoServ, loca);
+				Comparable[] respComps= modelo.buscarMedioClaseTipoLoca(medDet, claseVeh, tipoServ, b);
 				
 				for (int i=0;i<respComps.length && k>0;i++)
 				{
 					Comparendo actual=(Comparendo)respComps[i];
 					
-					if (actual.darMedio_Dete().equals(medDet) && actual.darClase_Vehi().equals(claseVeh) && actual.darTipo_Servicio().equals(tipoServ) && actual.darLocalidad().equals(loca))
+					if (actual.darMedio_Dete().equals(medDet) && actual.darClase_Vehi().equals(claseVeh) && actual.darTipo_Servicio().equals(tipoServ) && actual.darLocalidad().equals(b))
 					{
 						System.out.println(actual.darObjectid());
 						System.out.println(actual.darTipo_Servicio());
@@ -200,6 +204,31 @@ public class Controller {
 						k--;
 					}
 					
+				}
+				
+				break;
+			
+			case 7:
+				System.out.println("Ingrese la menor latitud del intervalo");
+				double minLat = lector.nextDouble();
+				System.out.println("Ingrese la mayor latitud del intervalo");
+				double maxLat=lector.nextDouble();
+				System.out.println("Tipo de vehículo");
+				String tipo=lector.next();
+				System.out.println("Número de comparendos a mostrar");
+				int numComp=lector.nextInt();
+				
+				ArrayList<Comparendo> comparendos = modelo.buscarLatitudTipo(minLat, maxLat, tipo);
+				
+				for (Comparendo c: comparendos)
+				{
+					System.out.println(c.darObjectid());
+					System.out.println(c.darTipo_Servicio());
+					System.out.println(c.darInfraccion());
+					System.out.println(c.darFecha_Hora());
+					System.out.println(c.darClase_Vehi());
+					System.out.println(c.darLatitud());
+					System.out.println("----------------------------------------");
 				}
 				
 				break;

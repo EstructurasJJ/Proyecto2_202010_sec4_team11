@@ -299,21 +299,21 @@ public class Modelo
 			///////CARGAR LAS ESTRUCTURAS///////
 			////////////////////////////////////
 
-			String keyBob = getFechaModBobi(compaAgregar.darFecha_Hora());	
-			//String keyJuanJo = compaAgregar.darMedio_Dete() + "-" + compaAgregar.darClase_Vehi() + "-" + compaAgregar.darTipo_Servicio() + "-" + compaAgregar.darLocalidad();
-			HSLBobi.putInSet(keyBob, compaAgregar);
-			//HSCJuanjo.putInSet(keyJuanJo, compaAgregar);
-			keyBob = "";
-			//keyJuanJo = "";
+			//String keyBob = getFechaModBobi(compaAgregar.darFecha_Hora());	
+			String keyJuanJo = compaAgregar.darMedio_Dete() + "-" + compaAgregar.darClase_Vehi() + "-" + compaAgregar.darTipo_Servicio() + "-" + compaAgregar.darLocalidad();
+			//HSLBobi.putInSet(keyBob, compaAgregar);
+			HSCJuanjo.putInSet(keyJuanJo, compaAgregar);
+			//keyBob = "";
+			keyJuanJo = "";
 
 
 			//datosHeap.añadir(compaAgregar);
-			//datosCola.agregar(compaAgregar);
+			datosCola.agregar(compaAgregar);
 
 			booty.enqueue(compaAgregar);
 
 			//arbolBobi.put(compaAgregar.darFecha_Hora(), compaAgregar);
-			//arbolJuanjo.put(compaAgregar.darLatitud(), compaAgregar);
+			arbolJuanjo.put(compaAgregar.darLatitud(), compaAgregar);
 
 
 
@@ -452,8 +452,24 @@ public class Modelo
 
 	}
 
-	public void buscarLatitudTipo (String Latitud, String Tipo)
+	public ArrayList<Comparendo> buscarLatitudTipo (double minLat, double maxLat, String Tipo)
 	{
+		Iterator<Comparendo> lista = arbolJuanjo.values(minLat, maxLat).iterator();
+		
+		
+		ArrayList<Comparendo> listaFinal = new ArrayList<Comparendo>();
+
+		while(lista.hasNext())
+		{
+			Comparendo aux = lista.next();
+
+			if(aux.darClase_Vehi().equals(Tipo))
+			{
+				listaFinal.add(aux);
+			}
+		}
+
+		return listaFinal;
 
 	}
 

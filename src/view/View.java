@@ -20,7 +20,7 @@ public class View
 			System.out.println("4. Buscar los comparendos que tienen una fecha-hora en un rango y que son de una localidad dada.");
 			System.out.println("5. Buscar los M comparendos más cercanos a la estación de policía del Campín");
 			System.out.println("6. Buscar los comparendos por medio de deteccón, clase de vehículo, tipo de servicio y localidad");
-			System.out.println("7. FALTA.");
+			System.out.println("7. Buscar los comparendos que están en un rango de latitudes, con un tipo de vehículo en específico");
 			System.out.println("8. Visualizar Datos en una Tabla ASCII.");
 			System.out.println("9. El costo de los tiempos de espera hoy en día (cola)");
 			System.out.println("10. El costo de los tiempos de espera usando el nuevo sistema.");

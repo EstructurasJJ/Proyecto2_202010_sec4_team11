@@ -46,7 +46,7 @@ public class Controller {
 
 				//Cargar el archivo
 
-				modelo.leerGeoJson(RUTAGEOJASON);
+				modelo.leerGeoJson(COTEJO);
 
 				view.printMessage("Archivo GeoJSon Cargado");
 				view.printMessage("Numero total de comparendos en: ");

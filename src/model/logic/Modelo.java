@@ -465,7 +465,7 @@ public class Modelo
 	{
 		ArrayList<String> listaFechas = generarListaDeFechas();
 		TablaHashSondeoLineal<String, Comparendo> bobi = pasarComparendoATablaBobi();
-		
+
 		System.out.println("Total de comparendos: " + bobi.darDatos());
 
 		System.out.println("Rango de fechas          |   Comparendos durante el año");
@@ -505,10 +505,7 @@ public class Modelo
 		Comparable[] ordenados= shell_sort_Fecha(datos);
 		ArrayList<String[]> respuesta=new ArrayList<String[]>();
 		int costoTotal=0;
-		double diasPromedio;
-		int minT400=400, maxT400=0, minT40=400, maxT40=0, minT4=400, maxT4=0, cantidad400=0, cantidad40=0,cantidad4=0;
-		int totDT4=0,totDT40=0, totDT400=0;
-		int contadorDiario=0;
+		int minT400=400, maxT400=0, minT40=400, maxT40=0, minT4=400, maxT4=0, cantidad400=0, cantidad40=0,cantidad4=0, totDT4=0,totDT40=0, totDT400=0,contadorDiario=0;
 		SimpleDateFormat sdf= new SimpleDateFormat("dd/MM/yyyy");
 		Date diaDelAnio=null, nextYear=null;
 		int parteDelArreglo = 0;
@@ -526,99 +523,66 @@ public class Modelo
 
 		while(daysBetween(diaDelAnio, nextYear)>0)
 		{
-
 			salir=false;
-
 			while (contadorDiario<1500 && parteDelArreglo<ordenados.length && !salir)
 			{
 				Comparendo actual=(Comparendo)ordenados[parteDelArreglo];
 				Date fechaAnalizada=actual.darFecha_Hora();
 				String descMulta=actual.darDes_Infrac();
 
-
+				//Para no analizar los comparendos del futuro si me entraron menos de 1500
 				if (esAntesDMY(diaDelAnio,fechaAnalizada))
 				{
 					salir=true;
 				}
 				else
 				{
-					if (descMulta.contains("SERA INMOVILIZADO") || descMulta.contains("SERÁ INMOVILIZADO"))
-					{
-						valorMulta=400;
+					valorMulta = calcularValorMulta(descMulta);
+					if (valorMulta == 400)
 						cantidad400++;
-					}
-					else if (descMulta.contains("LICENCIA DE CONDUC"))
-					{
-						valorMulta=40;
+					else if (valorMulta==40)
 						cantidad40++;
-					}
 					else
-					{
-						valorMulta=4;
 						cantidad4++;
-					}
 
+					//Si el comparendo se está leyendo de forma puntual
 					if (mismoDMY(diaDelAnio,fechaAnalizada))
 					{
 						if (valorMulta==4)
-						{
 							minT4=0;
-						}
 						else if (valorMulta==40)
-						{
 							minT40=0;
-						}
 						else
-						{
 							minT400=0;
-						}
 					}
 					else
 					{
+						//Calculo los días que tuvo que esperar para ser procesado
+						
 						int diasDeEspera=daysBetween(fechaAnalizada,diaDelAnio);
 						costoTotal += (diasDeEspera*valorMulta);
-
 
 						if (valorMulta==4)
 						{ 
 							totDT4 += diasDeEspera;
 
 							if (diasDeEspera>maxT4)
-							{
 								maxT4=diasDeEspera;
-							}
-							if(diasDeEspera<minT4)
-							{
-								minT4=diasDeEspera;
-							}
 						}
 						else if (valorMulta==40)
 						{
 							totDT40 += diasDeEspera;
 
 							if (diasDeEspera>maxT40)
-							{
 								maxT40=diasDeEspera;
-							}
-							if(diasDeEspera<minT40)
-							{
-								minT40=diasDeEspera;
-							}
 						}
 						else
 						{
 							totDT400 += diasDeEspera;
 
 							if (diasDeEspera>maxT400)
-							{
 								maxT400=diasDeEspera;
-							}
-							if(diasDeEspera<minT400)
-							{
-								minT400=diasDeEspera;
-							}
 						}
-
 					}
 					contadorDiario++;
 					parteDelArreglo++;
@@ -626,34 +590,27 @@ public class Modelo
 			}
 
 			//Significa que ya leí los 1500 pero no he cambiado de fecha 
+			//Con eso cuento cuántos comparendos tengo represados para ese día
 			if(parteDelArreglo<ordenados.length && (mismoDMY(diaDelAnio,((Comparendo)ordenados[parteDelArreglo]).darFecha_Hora()) || ((Comparendo)ordenados[parteDelArreglo]).darFecha_Hora().before(diaDelAnio)) )
 			{
 				int contadorAux=parteDelArreglo;
 				Date fechaAuxiliar=((Comparendo)ordenados[contadorAux]).darFecha_Hora();
 
+				//Mientras no se salga del arreglo y esté antes o en el mismo día en el que estoy 
 				while (contadorAux<ordenados.length && (mismoDMY(diaDelAnio,fechaAuxiliar) || ((Comparendo)ordenados[contadorAux]).darFecha_Hora().before(diaDelAnio)))
 				{
-
 					contadorEspera++;
 					contadorAux++;
 					if (contadorAux<ordenados.length)
 					{
 						fechaAuxiliar=((Comparendo)ordenados[contadorAux]).darFecha_Hora();
 					}
-
 				}			
 			}
 
 			String[] pars = new String [3];
 			pars[0] = sdf.format(diaDelAnio);
-			if (contadorDiario==151)
-			{
-				pars[1] = "150";
-			}
-			else
-			{
-				pars[1]=contadorDiario+"";
-			}
+			pars[1]=contadorDiario+"";
 
 			pars[2] = contadorEspera+"";
 			respuesta.add(pars);
@@ -662,84 +619,78 @@ public class Modelo
 			contadorDiario=0;
 			diaDelAnio=avanzarD(diaDelAnio);
 
-
 		}
 
+		//Proceso los datos que quedaron faltando del 31 de diciembre
+		//Igualmente se leen 1500 comparendos diarios, pero no entran los de 2019
 
-		//Proceso los datos que quedaron faltando del 31 de diciembre, supongo que se leyeron todos los faltantes el primero de enero del 2019
 		if (parteDelArreglo<ordenados.length)
 		{
 			String multisha="";
 
 			while (parteDelArreglo<ordenados.length)
 			{
-				Comparendo aux=(Comparendo)ordenados[parteDelArreglo];
-				multisha = aux.darDes_Infrac();
-				Date analizada=aux.darFecha_Hora();
+				contadorDiario=0;
 
-				if (multisha.contains("SERA INMOVILIZADO") || multisha.contains("SERÁ INMOVILIZADO"))
+				while (contadorDiario<1500 && parteDelArreglo<ordenados.length)
 				{
-					valorMulta=400;
-					cantidad400++;
-				}
-				else if (multisha.contains("LICENCIA DE CONDUC"))
-				{
-					valorMulta=40;
-					cantidad40++;
-				}
-				else
-				{
-					valorMulta=4;
-					cantidad4++;
-				}
+					Comparendo aux=(Comparendo)ordenados[parteDelArreglo];
+					multisha = aux.darDes_Infrac();
+					Date analizada=aux.darFecha_Hora();
 
-				int espera=daysBetween(analizada, nextYear);
+					valorMulta = calcularValorMulta(multisha);
+					if (valorMulta == 400)
+						cantidad400++;
+					else if (valorMulta==40)
+						cantidad40++;
+					else
+						cantidad4++;
 
-				costoTotal += (espera*valorMulta);
+					int espera=daysBetween(analizada, nextYear);
 
+					costoTotal += (espera*valorMulta);
 
-				if (valorMulta==4)
-				{ 
-					totDT4 += espera;
+					if (valorMulta==4)
+					{ 
+						totDT4 += espera;
 
-					if (espera>maxT4)
-					{
-						maxT4=espera;
+						if (espera>maxT4)
+							maxT4=espera;
 					}
-					if(espera<minT4)
+					else if (valorMulta==40)
 					{
-						minT4=espera;
-					}
-				}
-				else if (valorMulta==40)
-				{
-					totDT40 += espera;
+						totDT40 += espera;
 
-					if (espera>maxT40)
-					{
-						maxT40=espera;
+						if (espera>maxT40)
+							maxT40=espera;
 					}
-					if(espera<minT40)
+					else
 					{
-						minT40=espera;
-					}
-				}
-				else
-				{
-					totDT400 +=espera;
+						totDT400 +=espera;
 
-					if (espera>maxT400)
-					{
-						maxT400=espera;
+						if (espera>maxT400)
+							maxT400=espera;
 					}
-					if(espera<minT400)
-					{
-						minT400=espera;
-					}
+					contadorDiario++;
+					parteDelArreglo++;
 				}
-
-				parteDelArreglo++;
+				
+				nextYear=avanzarD(nextYear);
 			}
+		}
+		
+		System.out.println("Fecha\t\t|ComparendosProcesados\t\t\t\t***");
+		System.out.println("\t\t|Comparendos que están en espera\t\t###");
+		System.out.println("-----------------------------------------------------------------------");
+		
+		
+		for (String[] arreglo: respuesta)
+		{
+			//System.out.println(arreglo[0]+"-"+arreglo[1]+"-"+arreglo[2]);
+			String[] aux=darCadenasAsteriscosYNumerales(arreglo);
+			System.out.println(arreglo[0]+"\t|"+aux[0]);
+			System.out.println("\t\t|"+aux[1]);
+			
 		}
 
 		System.out.println("El costo total es de: $" + costoTotal);
@@ -753,6 +704,8 @@ public class Modelo
 		System.out.println("\t400\t|"+minT400+"\t\t|"+(totDT400/cantidad400)+"\t\t\t|"+maxT400);
 		return respuesta;
 	}
+
+
 
 	public void nuevoModeloQueEsMejorYAhorraPlata()
 	{
@@ -788,33 +741,33 @@ public class Modelo
 
 				int diferencia = diasEntreDosFechas(fechaReferencia, fechaCambiante);
 				int valor = multaComparendo(compi);				
-				
+
 				total = total + (diferencia*valor);
 				cantidad++;
 			}
 
 			i++;
 		}
-		
+
 		System.out.println("----------------");
 		System.out.println("Total parcial: $" + total);
 		System.out.println("Comparendos restantes: " + actual.darTamanio());
 		System.out.println("----------------");
-		
+
 		//Proceso para los que sobraron.
-		
+
 		long faltante = 0;
-		
+
 		int dia = 1;
 		while (actual.darTamanio() > 0 )
 		{
 			String fechaRef = "";
-			
+
 			if(dia < 10) fechaRef = "2019/01/0" + dia + "-00:00:00";
 			else fechaRef = "2019/01/" + dia + "-00:00:00";
-			
+
 			Date fechaReferencia = generarFecha(fechaRef);
-			
+
 			int cantidad = 0;			
 			while(cantidad < 1500 && actual.darTamanio() > 0)
 			{
@@ -825,18 +778,18 @@ public class Modelo
 
 				int diferencia = diasEntreDosFechas(fechaReferencia, fechaCambiante);				
 				int valor = multaComparendo(compi);				
-				
+
 				faltante = faltante + (diferencia*valor);
 				cantidad++;
 			}
-			
+
 			dia++;
 		}
-		
+
 		System.out.println("Faltante en 2019: $" + faltante);
 		System.out.println("Comparendos restantes: " + actual.darTamanio());
 		System.out.println("----------------");
-		
+
 		long ultimo = total + faltante;
 		System.out.println("Total: $" + ultimo);
 		System.out.println("----------------");
@@ -1005,7 +958,7 @@ public class Modelo
 	private int clasificacion (Comparendo compi)
 	{
 		String multisha = compi.darDes_Infrac();
-		
+
 		if (multisha.contains("LICENCIA DE CONDUC") || multisha.contains("SERA INMOVILIZADO") || multisha.contains("SERÁ INMOVILIZADO")) return 1;
 		else return 2;
 	}
@@ -1014,11 +967,11 @@ public class Modelo
 	{
 		long tim2 = fech2.getTime();
 		long tim1 = fech1.getTime();
-		
+
 		long dif = Math.abs(tim2-tim1);
-		
+
 		long dias = dif/86400000;
-		
+
 		int findias = (int) dias;
 		return findias;
 	}
@@ -1028,7 +981,7 @@ public class Modelo
 		while(conjunto.hasNext())
 		{
 			Comparendo compi = (Comparendo) conjunto.next();
-			
+
 			int clasi = clasificacion(compi);
 			if(clasi == 1) actual.push(compi);
 			else actual.enqueue(compi);		
@@ -1040,13 +993,13 @@ public class Modelo
 	private int multaComparendo (Comparendo compi)
 	{
 		String multisha = compi.darDes_Infrac();
-		
+
 		if (multisha.contains("SERA INMOVILIZADO") || multisha.contains("SERÁ INMOVILIZADO")) return 400;
 		else if (multisha.contains("LICENCIA DE CONDUC")) return 40;
 		else return 4;
 
 	}
-	
+
 	/////////////////////////////////////////////////////////////////////////////////JUANJO
 
 	private int daysBetween (Date actual, Date analizado)
@@ -1145,6 +1098,47 @@ public class Modelo
 		}
 
 		return respuesta;
+	}
+	
+	private String[] darCadenasAsteriscosYNumerales(String [] arreglo)
+	{
+		String [] respuesta = new String [2];
+		String cadenaAsteriscos="", cadenaNumerales="";
+		
+		int numAsteriscos = Integer.parseInt(arreglo[1])/150;
+		int numNumerales = Integer.parseInt(arreglo[2])/150;
+		
+		for (int i=0;i<numAsteriscos;i++)
+		{
+			cadenaAsteriscos=cadenaAsteriscos +"*";
+		}
+		
+		for (int i=0;i<numNumerales;i++)
+		{
+			cadenaNumerales=cadenaNumerales +"#";
+		}
+		
+		respuesta[0]=cadenaAsteriscos;
+		respuesta[1]=cadenaNumerales;
+		
+		return respuesta;
+		
+	}
+	
+	private int calcularValorMulta(String desc)
+	{
+		if (desc.contains("SERA INMOVILIZADO") || desc.contains("SERÁ INMOVILIZADO")||desc.contains("INMOVILIZADO"))
+		{
+			return 400;
+		}
+		else if (desc.contains("LICENCIA DE CONDUC"))
+		{
+			return 40;
+		}
+		else
+		{
+			return 4;
+		}
 	}
 
 	/////////////////////////////////////////////////////////////////////////////////AMBOS

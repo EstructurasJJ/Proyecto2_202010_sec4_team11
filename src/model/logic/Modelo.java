@@ -712,7 +712,10 @@ public class Modelo
 		System.out.println("El costo total es de: $" + costoTotal);
 		System.out.println("El tiempo total de espera de los comparendos fue de: "+(totDT4+totDT40+totDT400)+" días");
 		System.out.println("En promedio, un comparendo debe esperar: "+((totDT4+totDT40+totDT400)/ordenados.length)+" días");
-
+		System.out.println("Los comparendos de $400 generaron una multa de: $"+(totDT400*400));
+		System.out.println("Los comparendos de $40 generaron una multa de: $"+(totDT40*40));
+		System.out.println("Los comparendos de $4 generaron una multa de: $"+(totDT4*4));
+		
 		System.out.println("A continuación se esperan los datos de interés de cada tipo de comparendo según su multa:");
 		System.out.println("Costo Diario\t|Tiempo Mínimo\t|Tiempo Promedio\t|Tiempo Max");
 		System.out.println("\t4\t|"+minT4+"\t\t|"+(totDT4/cantidad4)+"\t\t\t|"+maxT4);

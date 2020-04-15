@@ -220,8 +220,9 @@ public class Controller {
 				
 				ArrayList<Comparendo> comparendos = modelo.buscarLatitudTipo(minLat, maxLat, tipo);
 				
-				for (Comparendo c: comparendos)
+				for (int i =0;i<comparendos.size() && numComp>0;i++)
 				{
+					Comparendo c=comparendos.get(i);
 					System.out.println(c.darObjectid());
 					System.out.println(c.darTipo_Servicio());
 					System.out.println(c.darInfraccion());
@@ -229,6 +230,7 @@ public class Controller {
 					System.out.println(c.darClase_Vehi());
 					System.out.println(c.darLatitud());
 					System.out.println("----------------------------------------");
+					numComp--;
 				}
 				
 				break;
